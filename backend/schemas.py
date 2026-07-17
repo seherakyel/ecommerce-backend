@@ -1,0 +1,61 @@
+from datetime import datetime
+
+from pydantic import BaseModel, Field
+
+
+class ProductCreate(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    stock: int = 0
+
+
+class ProductResponse(BaseModel):
+    id: int
+    name: str
+    description: str | None
+    price: float
+    stock: int
+
+    model_config = {"from_attributes": True}
+
+
+class CartItemCreate(BaseModel):
+    session_id: str = Field(..., min_length=1)
+    product_id: int
+    quantity: int = Field(default=1, ge=1)
+
+
+class CartItemResponse(BaseModel):
+    id: int
+    session_id: str
+    product_id: int
+    quantity: int
+    product: ProductResponse
+
+    model_config = {"from_attributes": True}
+
+
+class OrderItemResponse(BaseModel):
+    id: int
+    product_id: int
+    product_name: str
+    quantity: int
+    price: float
+
+    model_config = {"from_attributes": True}
+
+
+class OrderCreate(BaseModel):
+    session_id: str = Field(..., min_length=1)
+
+
+class OrderResponse(BaseModel):
+    id: int
+    session_id: str
+    total: float
+    status: str
+    created_at: datetime
+    items: list[OrderItemResponse]
+
+    model_config = {"from_attributes": True}
