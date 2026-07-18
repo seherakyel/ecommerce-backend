@@ -1,5 +1,6 @@
 import os
 import sys
+from fastapi.middleware.cors import CORSMiddleware
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -15,6 +16,14 @@ app = FastAPI(title="E-commerce Backend")
 app.include_router(products.router)
 app.include_router(cart.router)
 app.include_router(orders.router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
