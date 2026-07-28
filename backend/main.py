@@ -8,7 +8,7 @@ from fastapi import FastAPI
 
 import models
 from database import engine
-from routers import cart, orders, products
+from routers import cart, orders, products, auth
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -16,6 +16,8 @@ app = FastAPI(title="E-commerce Backend")
 app.include_router(products.router)
 app.include_router(cart.router)
 app.include_router(orders.router)
+app.include_router(auth.router)
+
 
 app.add_middleware(
     CORSMiddleware,

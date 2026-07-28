@@ -6,7 +6,7 @@ import schemas
 import auth
 from database import get_db
 
-router = APIRouter(prefix="/auth", tags=["kimlik"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=schemas.UserResponse)
