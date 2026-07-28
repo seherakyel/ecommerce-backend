@@ -7,7 +7,7 @@ import models
 from database import get_db
 from dependencies import get_current_user
 
-router = APIRouter(prefix="/orders", tags=["sipariş"])
+router = APIRouter(prefix="/orders", tags=["orders"])
 
 
 @router.post("/", response_model=schemas.OrderResponse)

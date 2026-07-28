@@ -32,14 +32,12 @@ class ProductResponse(BaseModel):
 
 
 class CartItemCreate(BaseModel):
-    session_id: str = Field(..., min_length=1)
     product_id: int
     quantity: int = Field(default=1, ge=1)
 
 
 class CartItemResponse(BaseModel):
     id: int
-    session_id: str
     product_id: int
     quantity: int
     product: ProductResponse
@@ -58,12 +56,10 @@ class OrderItemResponse(BaseModel):
 
 
 class OrderCreate(BaseModel):
-    session_id: str = Field(..., min_length=1)
-
+    pass
 
 class OrderResponse(BaseModel):
     id: int
-    session_id: str
     total: float
     status: str
     created_at: datetime

@@ -26,7 +26,6 @@ class CartItem(Base):
     __tablename__ = "cart_items"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(String, index=True, nullable=False)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, default=1)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
@@ -38,7 +37,6 @@ class Order(Base):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(String, index=True, nullable=False)
     total = Column(Float, nullable=False)
     status = Column(String, default="tamamlandi")
     created_at = Column(DateTime, default=datetime.utcnow)

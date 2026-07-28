@@ -95,8 +95,8 @@ def remove_cart_item(db: Session, item_id: int, user_id: int):
     return item
 
 
-def clear_cart(db: Session, session_id: str):
-    db.query(models.CartItem).filter(models.CartItem.session_id == session_id).delete()
+def clear_cart(db: Session, user_id: int):
+    db.query(models.CartItem).filter(models.CartItem.user_id == user_id).delete()
     db.commit()
 
 
