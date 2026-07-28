@@ -11,7 +11,7 @@ router = APIRouter(prefix="/cart", tags=["cart"])
 
 
 @router.post("/items", response_model=schemas.CartItemResponse)
-def sepete_ekle(
+def add_to_cart(
     item: schemas.CartItemCreate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
@@ -20,7 +20,7 @@ def sepete_ekle(
 
 
 @router.get("/", response_model=list[schemas.CartItemResponse])
-def sepeti_goster(
+def show_cart(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
@@ -28,7 +28,7 @@ def sepeti_goster(
 
 
 @router.delete("/items/{item_id}")
-def sepetten_sil(
+def remove_from_cart(
     item_id: int,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
@@ -40,7 +40,7 @@ def sepetten_sil(
 
 
 @router.patch("/items/{item_id}", response_model=schemas.CartItemResponse)
-def adet_guncelle(
+def update_count(
     item_id: int,
     quantity: int,
     db: Session = Depends(get_db),

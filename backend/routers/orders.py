@@ -11,7 +11,7 @@ router = APIRouter(prefix="/orders", tags=["orders"])
 
 
 @router.post("/", response_model=schemas.OrderResponse)
-def siparis_olustur(
+def create_order(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
@@ -19,7 +19,7 @@ def siparis_olustur(
 
 
 @router.get("/", response_model=list[schemas.OrderResponse])
-def siparisleri_listele(
+def list_orders(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
@@ -27,7 +27,7 @@ def siparisleri_listele(
 
 
 @router.get("/{order_id}", response_model=schemas.OrderResponse)
-def siparis_getir(
+def get_order(
     order_id: int,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),

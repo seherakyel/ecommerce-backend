@@ -29,7 +29,7 @@ app.add_middleware(
 
 
 @app.get("/")
-def ana_sayfa():
+def home_page():
     return {"mesaj": "Merhaba, backend çalışıyor!"}
 
 
