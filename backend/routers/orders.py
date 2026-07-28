@@ -1,26 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 import crud
 import schemas
+import models
 from database import get_db
+from dependencies import get_current_user
 
-router = APIRouter(prefix="/orders", tags=["orders"])
+router = APIRouter(prefix="/orders", tags=["sipariş"])
 
 
 @router.post("/", response_model=schemas.OrderResponse)
-def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
-    return crud.create_order_from_cart(db, order)
+def siparis_olustur(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    return crud.create_order_from_cart(db, current_user.id)
 
 
 @router.get("/", response_model=list[schemas.OrderResponse])
-def list_orders(db: Session = Depends(get_db)):
-    return crud.get_orders(db)
+def siparisleri_listele(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    return crud.get_orders(db, current_user.id)
 
 
 @router.get("/{order_id}", response_model=schemas.OrderResponse)
-def get_orders(order_id: int, db: Session = Depends(get_db)):
-    order = crud.get_order(db, order_id)
-    if not order:
-        raise HTTPException(status_code=404, detail="Sipariş bulunamadı")
-    return order
+def siparis_getir(
+    order_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    return crud.get_order(db, order_id)
