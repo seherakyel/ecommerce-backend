@@ -42,7 +42,7 @@ def _get_cart_item(db: Session, item_id: int):
     )
 
 
-def add_to_cart(db: Session, item: schemas.CartItemCreate):
+def add_to_cart(db: Session, user_id: int, item: schemas.CartItemCreate):
     product = get_product(db, item.product_id)
     if not product:
         raise HTTPException(status_code=404, detail="Ürün bulunamadı")
@@ -50,7 +50,7 @@ def add_to_cart(db: Session, item: schemas.CartItemCreate):
     existing = (
         db.query(models.CartItem)
         .filter(
-            models.CartItem.session_id == item.session_id,
+            models.CartItem.user_id == user_id,
             models.CartItem.product_id == item.product_id,
         )
         .first()
@@ -61,27 +61,31 @@ def add_to_cart(db: Session, item: schemas.CartItemCreate):
         db.commit()
         return _get_cart_item(db, existing.id)
 
-    cart_item = models.CartItem(**item.model_dump())
+    cart_item = models.CartItem(
+        user_id=user_id,
+        product_id=item.product_id,
+        quantity=item.quantity,
+    )
     db.add(cart_item)
     db.commit()
     return _get_cart_item(db, cart_item.id)
 
 
-def get_cart(db: Session, session_id: str):
+def get_cart(db: Session, user_id: int):
     return (
         db.query(models.CartItem)
         .options(joinedload(models.CartItem.product))
-        .filter(models.CartItem.session_id == session_id)
+        .filter(models.CartItem.user_id == user_id)
         .all()
     )
 
 
-def remove_cart_item(db: Session, item_id: int, session_id: str):
+def remove_cart_item(db: Session, item_id: int, user_id: int):
     item = (
         db.query(models.CartItem)
         .filter(
             models.CartItem.id == item_id,
-            models.CartItem.session_id == session_id,
+            models.CartItem.user_id == user_id,
         )
         .first()
     )
@@ -96,12 +100,12 @@ def clear_cart(db: Session, session_id: str):
     db.commit()
 
 
-def update_cart_item_quantity(db: Session, item_id: int, session_id: str, quantity: int):
+def update_cart_item_quantity(db: Session, item_id: int, user_id: int, quantity: int):
     item = (
         db.query(models.CartItem)
         .filter(
             models.CartItem.id == item_id,
-            models.CartItem.session_id == session_id,
+            models.CartItem.user_id == user_id,
         )
         .first()
     )
@@ -119,8 +123,8 @@ def update_cart_item_quantity(db: Session, item_id: int, session_id: str, quanti
 
 # --- Order ---
 
-def create_order_from_cart(db: Session, order: schemas.OrderCreate):
-    cart_items = get_cart(db, order.session_id)
+def create_order_from_cart(db: Session, user_id: int):
+    cart_items = get_cart(db, user_id)
     if not cart_items:
         raise HTTPException(status_code=400, detail="Sepet boş")
 
@@ -145,7 +149,7 @@ def create_order_from_cart(db: Session, order: schemas.OrderCreate):
             }
         )
 
-    db_order = models.Order(session_id=order.session_id, total=total)
+    db_order = models.Order(user_id=user_id, total=total)
     db.add(db_order)
     db.flush()
 
@@ -154,24 +158,22 @@ def create_order_from_cart(db: Session, order: schemas.OrderCreate):
         product = get_product(db, item_data["product_id"])
         product.stock -= item_data["quantity"]
 
-    db.query(models.CartItem).filter(
-        models.CartItem.session_id == order.session_id
-    ).delete()
+    db.query(models.CartItem).filter(models.CartItem.user_id == user_id).delete()
     db.commit()
 
     return get_order(db, db_order.id)
 
 
-def get_orders(db: Session, skip: int = 0, limit: int = 100):
+def get_orders(db: Session, user_id: int, skip: int = 0, limit: int = 100):
     return (
         db.query(models.Order)
         .options(joinedload(models.Order.items))
+        .filter(models.Order.user_id == user_id)
         .order_by(models.Order.created_at.desc())
         .offset(skip)
         .limit(limit)
         .all()
     )
-
 
 def get_order(db: Session, order_id: int):
     return (

@@ -29,6 +29,7 @@ class CartItem(Base):
     session_id = Column(String, index=True, nullable=False)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, default=1)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     product = relationship("Product")
 
@@ -41,6 +42,7 @@ class Order(Base):
     total = Column(Float, nullable=False)
     status = Column(String, default="tamamlandi")
     created_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     items = relationship("OrderItem", back_populates="order")
 
