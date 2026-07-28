@@ -5,7 +5,7 @@ import models
 import schemas
 
 
-# --- Ürün ---
+# --- Product ---
 
 def create_product(db: Session, product: schemas.ProductCreate):
     db_product = models.Product(**product.model_dump())
@@ -31,7 +31,7 @@ def delete_product(db: Session, product_id: int):
     return product
 
 
-# --- Sepet ---
+# --- Cart ---
 
 def _get_cart_item(db: Session, item_id: int):
     return (
@@ -96,7 +96,28 @@ def clear_cart(db: Session, session_id: str):
     db.commit()
 
 
-# --- Sipariş ---
+def update_cart_item_quantity(db: Session, item_id: int, session_id: str, quantity: int):
+    item = (
+        db.query(models.CartItem)
+        .filter(
+            models.CartItem.id == item_id,
+            models.CartItem.session_id == session_id,
+        )
+        .first()
+    )
+    if not item:
+        return None
+
+    if quantity <= 0:
+        db.delete(item)
+        db.commit()
+        return None
+
+    item.quantity = quantity
+    db.commit()
+    return _get_cart_item(db, item.id)
+
+# --- Order ---
 
 def create_order_from_cart(db: Session, order: schemas.OrderCreate):
     cart_items = get_cart(db, order.session_id)

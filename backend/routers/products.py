@@ -5,21 +5,21 @@ import crud
 import schemas
 from database import get_db
 
-router = APIRouter(prefix="/products", tags=["ürünler"])
+router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.post("/", response_model=schemas.ProductResponse)
-def urun_ekle(product: schemas.ProductCreate, db: Session = Depends(get_db)):
+def add_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
     return crud.create_product(db, product)
 
 
 @router.get("/", response_model=list[schemas.ProductResponse])
-def urunleri_listele(db: Session = Depends(get_db)):
+def list_products(db: Session = Depends(get_db)):
     return crud.get_products(db)
 
 
 @router.get("/{product_id}", response_model=schemas.ProductResponse)
-def urun_getir(product_id: int, db: Session = Depends(get_db)):
+def get_product(product_id: int, db: Session = Depends(get_db)):
     product = crud.get_product(db, product_id)
     if not product:
         raise HTTPException(status_code=404, detail="Ürün bulunamadı")
@@ -27,7 +27,7 @@ def urun_getir(product_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{product_id}")
-def urun_sil(product_id: int, db: Session = Depends(get_db)):
+def delete_product(product_id: int, db: Session = Depends(get_db)):
     product = crud.delete_product(db, product_id)
     if not product:
         raise HTTPException(status_code=404, detail="Ürün bulunamadı")
