@@ -56,3 +56,13 @@ class OrderItem(Base):
     price = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="items")
+
+
+class Favorite(Base):
+    __tablename__ = "favorites"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+
+    product = relationship("Product")

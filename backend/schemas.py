@@ -66,3 +66,14 @@ class OrderResponse(BaseModel):
     items: list[OrderItemResponse]
 
     model_config = {"from_attributes": True}
+
+
+class FavoriteCreate(BaseModel):
+    product_id: int
+
+
+class FavoriteResponse(BaseModel):
+    id: int
+    product: ProductResponse
+
+    model_config = {"from_attributes": True}

@@ -210,3 +210,50 @@ def authenticate_user(db: Session, email: str, password: str):
     if not auth.verify_password(password, user.hashed_password):
         return None
     return user
+
+
+def add_favorite(db: Session, user_id: int, product_id: int):
+    existing = (
+        db.query(models.Favorite)
+        .filter(
+            models.Favorite.user_id == user_id,
+            models.Favorite.product_id == product_id,
+        )
+        .first()
+    )
+    if existing:
+        return existing
+
+    product = get_product(db, product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Ürün bulunamadı")
+
+    favorite = models.Favorite(user_id=user_id, product_id=product_id)
+    db.add(favorite)
+    db.commit()
+    db.refresh(favorite)
+    return favorite
+
+
+def get_favorites(db: Session, user_id: int):
+    return (
+        db.query(models.Favorite)
+        .options(joinedload(models.Favorite.product))
+        .filter(models.Favorite.user_id == user_id)
+        .all()
+    )
+
+
+def remove_favorite(db: Session, user_id: int, product_id: int):
+    favorite = (
+        db.query(models.Favorite)
+        .filter(
+            models.Favorite.user_id == user_id,
+            models.Favorite.product_id == product_id,
+        )
+        .first()
+    )
+    if favorite:
+        db.delete(favorite)
+        db.commit()
+    return favorite
