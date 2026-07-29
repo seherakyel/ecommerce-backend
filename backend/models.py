@@ -66,3 +66,16 @@ class Favorite(Base):
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
 
     product = relationship("Product")
+
+
+class Address(Base):
+    __tablename__ = "addresses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String, nullable=False)
+    full_name = Column(String, nullable=False)
+    phone = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    district = Column(String, nullable=False)
+    full_address = Column(String, nullable=False)

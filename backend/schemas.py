@@ -77,3 +77,23 @@ class FavoriteResponse(BaseModel):
     product: ProductResponse
 
     model_config = {"from_attributes": True}
+
+class AddressCreate(BaseModel):
+    title: str
+    full_name: str
+    phone: str
+    city: str
+    district: str
+    full_address: str
+
+
+class AddressResponse(BaseModel):
+    id: int
+    title: str
+    full_name: str
+    phone: str
+    city: str
+    district: str
+    full_address: str
+
+    model_config = {"from_attributes": True}

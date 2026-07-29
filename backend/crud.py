@@ -257,3 +257,51 @@ def remove_favorite(db: Session, user_id: int, product_id: int):
         db.delete(favorite)
         db.commit()
     return favorite
+
+
+def create_address(db: Session, user_id: int, address: schemas.AddressCreate):
+    db_address = models.Address(user_id=user_id, **address.model_dump())
+    db.add(db_address)
+    db.commit()
+    db.refresh(db_address)
+    return db_address
+
+
+def get_addresses(db: Session, user_id: int):
+    return db.query(models.Address).filter(models.Address.user_id == user_id).all()
+
+
+def delete_address(db: Session, address_id: int, user_id: int):
+    address = (
+        db.query(models.Address)
+        .filter(
+            models.Address.id == address_id,
+            models.Address.user_id == user_id,
+        )
+        .first()
+    )
+    if address:
+        db.delete(address)
+        db.commit()
+    return address
+
+
+
+def update_address(db: Session, address_id: int, user_id: int, address: schemas.AddressCreate):
+    db_address = (
+        db.query(models.Address)
+        .filter(
+            models.Address.id == address_id,
+            models.Address.user_id == user_id,
+        )
+        .first()
+    )
+    if not db_address:
+        return None
+
+    for key, value in address.model_dump().items():
+        setattr(db_address, key, value)
+
+    db.commit()
+    db.refresh(db_address)
+    return db_address
