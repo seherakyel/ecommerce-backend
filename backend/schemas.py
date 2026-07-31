@@ -19,6 +19,7 @@ class ProductCreate(BaseModel):
     description: str | None = None
     price: float
     stock: int = 0
+    image_url: str | None = None
 
 
 class ProductResponse(BaseModel):
@@ -27,6 +28,7 @@ class ProductResponse(BaseModel):
     description: str | None
     price: float
     stock: int
+    image_url: str | None
 
     model_config = {"from_attributes": True}
 

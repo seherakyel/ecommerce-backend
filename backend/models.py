@@ -20,7 +20,7 @@ class Product(Base):
     description = Column(String)
     price = Column(Float, nullable=False)
     stock = Column(Integer, default=0)
-
+    image_url = Column(String, nullable=True)
 
 class CartItem(Base):
     __tablename__ = "cart_items"
