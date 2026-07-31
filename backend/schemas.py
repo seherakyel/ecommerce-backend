@@ -56,7 +56,7 @@ class OrderItemResponse(BaseModel):
 
 
 class OrderCreate(BaseModel):
-    pass
+    address_id: int
 
 class OrderResponse(BaseModel):
     id: int

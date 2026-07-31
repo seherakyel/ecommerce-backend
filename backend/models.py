@@ -41,6 +41,7 @@ class Order(Base):
     status = Column(String, default="tamamlandi")
     created_at = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    address_id = Column(Integer, ForeignKey("addresses.id"), nullable=True)
 
     items = relationship("OrderItem", back_populates="order")
 

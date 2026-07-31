@@ -259,12 +259,56 @@ def remove_favorite(db: Session, user_id: int, product_id: int):
     return favorite
 
 
-def create_address(db: Session, user_id: int, address: schemas.AddressCreate):
-    db_address = models.Address(user_id=user_id, **address.model_dump())
-    db.add(db_address)
+def create_order_from_cart(db: Session, user_id: int, address_id: int):
+    cart_items = get_cart(db, user_id)
+    if not cart_items:
+        raise HTTPException(status_code=400, detail="Sepet boş")
+
+    address = (
+        db.query(models.Address)
+        .filter(
+            models.Address.id == address_id,
+            models.Address.user_id == user_id,
+        )
+        .first()
+    )
+    if not address:
+        raise HTTPException(status_code=404, detail="Adres bulunamadı")
+
+    total = 0.0
+    order_items_data = []
+
+    for item in cart_items:
+        product = item.product
+        if product.stock < item.quantity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Yetersiz stok: {product.name} (stok: {product.stock})",
+            )
+        line_total = product.price * item.quantity
+        total += line_total
+        order_items_data.append(
+            {
+                "product_id": product.id,
+                "product_name": product.name,
+                "quantity": item.quantity,
+                "price": product.price,
+            }
+        )
+
+    db_order = models.Order(user_id=user_id, address_id=address_id, total=total)
+    db.add(db_order)
+    db.flush()
+
+    for item_data in order_items_data:
+        db.add(models.OrderItem(order_id=db_order.id, **item_data))
+        product = get_product(db, item_data["product_id"])
+        product.stock -= item_data["quantity"]
+
+    db.query(models.CartItem).filter(models.CartItem.user_id == user_id).delete()
     db.commit()
-    db.refresh(db_address)
-    return db_address
+
+    return get_order(db, db_order.id)
 
 
 def get_addresses(db: Session, user_id: int):

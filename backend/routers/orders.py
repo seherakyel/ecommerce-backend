@@ -12,10 +12,11 @@ router = APIRouter(prefix="/orders", tags=["orders"])
 
 @router.post("/", response_model=schemas.OrderResponse)
 def create_order(
+    order: schemas.OrderCreate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    return crud.create_order_from_cart(db, current_user.id)
+    return crud.create_order_from_cart(db, current_user.id, order.address_id)
 
 
 @router.get("/", response_model=list[schemas.OrderResponse])
@@ -33,3 +34,5 @@ def get_order(
     current_user: models.User = Depends(get_current_user),
 ):
     return crud.get_order(db, order_id)
+
+
