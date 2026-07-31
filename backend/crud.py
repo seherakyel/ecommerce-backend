@@ -16,9 +16,11 @@ def create_product(db: Session, product: schemas.ProductCreate):
 
 
 def get_products(db: Session, skip: int = 0, limit: int = 100, search: str = None):
+    print(f"GET_PRODUCTS ÇALIŞTI - search: {search}")
     query = db.query(models.Product)
     if search:
-        query = query.filter(models.Product.name.ilike(f"%{search}%"))
+        print(f"FİLTRE UYGULANIYOR: {search}")
+        query = query.filter(models.Product.name.ilike(f"{search}%"))
     return query.offset(skip).limit(limit).all()
 
 
