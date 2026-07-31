@@ -196,12 +196,17 @@ def create_user(db: Session, user: schemas.UserCreate):
         raise HTTPException(status_code=400, detail="Bu e-posta zaten kayıtlı")
 
     hashed = auth.hash_password(user.password)
-    db_user = models.User(email=user.email, hashed_password=hashed)
+    db_user = models.User(
+        email=user.email,
+        hashed_password=hashed,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        phone=user.phone,
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
-
 
 def authenticate_user(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
@@ -346,6 +351,14 @@ def update_address(db: Session, address_id: int, user_id: int, address: schemas.
     for key, value in address.model_dump().items():
         setattr(db_address, key, value)
 
+    db.commit()
+    db.refresh(db_address)
+    return db_address
+
+
+def create_address(db: Session, user_id: int, address: schemas.AddressCreate):
+    db_address = models.Address(user_id=user_id, **address.model_dump())
+    db.add(db_address)
     db.commit()
     db.refresh(db_address)
     return db_address

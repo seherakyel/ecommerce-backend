@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = "my-secret-key-12345"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -36,5 +36,7 @@ def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
+    except JWTError as e:
+        print(f"TOKEN HATASI: {e}")
+        print(f"KULLANILAN SECRET_KEY: {SECRET_KEY}")
         return None

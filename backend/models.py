@@ -11,6 +11,9 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
 
 class Product(Base):
     __tablename__ = "products"

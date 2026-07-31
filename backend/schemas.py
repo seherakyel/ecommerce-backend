@@ -4,13 +4,22 @@ from pydantic import BaseModel, Field
 class UserCreate(BaseModel):
     email: str
     password: str
+    first_name: str
+    last_name: str
+    phone: str
 
 class UserResponse(BaseModel):
     id: int
     email: str
+    first_name: str | None
+    last_name: str | None
+    phone: str | None
 
     model_config = {"from_attributes": True}
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
