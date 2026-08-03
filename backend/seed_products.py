@@ -2,7 +2,6 @@ import requests
 
 BASE = "http://127.0.0.1:8000"
 
-# Ana kategoriler ve alt kategorileri
 category_tree = {
     "Mobilya": {
         "Yatak Odası": ["Karyola & Yatak", "Gardırop", "Komodin", "Şifonyer", "Makyaj Masası"],
@@ -80,37 +79,48 @@ category_tree = {
     }
 }
 
-sub_ids = {}
+# En alt seviye kategori adı -> id (ürünleri bağlamak için)
+leaf_ids = {}
 
 for main_name, subs in category_tree.items():
     res = requests.post(f"{BASE}/categories/", json={"name": main_name})
     main_id = res.json()["id"]
-    print(f"✓ Ana kategori: {main_name} (id: {main_id})")
+    print(f"✓ Ana: {main_name} (id: {main_id})")
 
-    for sub_name in subs:
+    for sub_name, leaves in subs.items():
         res = requests.post(f"{BASE}/categories/", json={"name": sub_name, "parent_id": main_id})
         sub_id = res.json()["id"]
-        sub_ids[sub_name] = sub_id
-        print(f"   ✓ Alt kategori: {sub_name} (id: {sub_id})")
+        leaf_ids[sub_name] = sub_id
+        print(f"   ✓ Alt: {sub_name} (id: {sub_id})")
 
+        for leaf_name in leaves:
+            res = requests.post(f"{BASE}/categories/", json={"name": leaf_name, "parent_id": sub_id})
+            leaf_id = res.json()["id"]
+            leaf_ids[leaf_name] = leaf_id
+            print(f"      ✓ Alt-alt: {leaf_name} (id: {leaf_id})")
+
+# Ürünler (en alt seviyeye bağlı)
 products = [
-    {"name": "Çift Kişilik Karyola", "description": "Başlıklı, depolu", "price": 8999, "stock": 10, "sub": "Yatak Odası", "image_url": "https://picsum.photos/seed/bed/400/400"},
-    {"name": "Üçlü Koltuk", "description": "Gri kumaş, modern", "price": 18999, "stock": 8, "sub": "Oturma Odası", "image_url": "https://picsum.photos/seed/sofa/400/400"},
-    {"name": "6 Kişilik Yemek Masası", "description": "Ahşap, açılır", "price": 8499, "stock": 12, "sub": "Yemek Odası", "image_url": "https://picsum.photos/seed/diningtable/400/400"},
-    {"name": "No-Frost Buzdolabı", "description": "500L, A+++", "price": 22999, "stock": 15, "sub": "Buzdolabı", "image_url": "https://picsum.photos/seed/fridge/400/400"},
-    {"name": "9 kg Çamaşır Makinesi", "description": "A+++ enerji", "price": 14999, "stock": 20, "sub": "Çamaşır Makinesi", "image_url": "https://picsum.photos/seed/washer/400/400"},
-    {"name": "12000 BTU Split Klima", "description": "Inverter, sessiz", "price": 16499, "stock": 18, "sub": "Split Klima", "image_url": "https://picsum.photos/seed/ac/400/400"},
-    {"name": "Salon Halısı 160x230", "description": "Yumuşak doku", "price": 2499, "stock": 30, "sub": "Salon Halısı", "image_url": "https://picsum.photos/seed/carpet/400/400"},
-    {"name": "Kadife Fon Perde", "description": "Koyu yeşil", "price": 899, "stock": 40, "sub": "Fon Perde", "image_url": "https://picsum.photos/seed/curtain/400/400"},
-    {"name": "1000W Blender Seti", "description": "5 parça", "price": 1299, "stock": 35, "sub": "Blender", "image_url": "https://picsum.photos/seed/blender/400/400"},
-    {"name": "Kablosuz Süpürge", "description": "Güçlü emiş", "price": 3799, "stock": 25, "sub": "Süpürge", "image_url": "https://picsum.photos/seed/vacuum/400/400"},
-    {"name": "Pamuk Saten Nevresim", "description": "Çift kişilik, 4 parça", "price": 749, "stock": 50, "sub": "Çift Kişilik", "image_url": "https://picsum.photos/seed/bedding/400/400"},
-    {"name": "40 Parça Çeyiz Seti", "description": "Komple", "price": 4999, "stock": 15, "sub": "Komple Set", "image_url": "https://picsum.photos/seed/dowry/400/400"},
+    {"name": "Başlıklı Çift Kişilik Karyola", "description": "Depolu, modern", "price": 8999, "stock": 10, "leaf": "Karyola & Yatak", "image_url": "https://picsum.photos/seed/bed/400/400"},
+    {"name": "4 Kapılı Gardırop", "description": "Aynalı", "price": 6499, "stock": 12, "leaf": "Gardırop", "image_url": "https://picsum.photos/seed/wardrobe/400/400"},
+    {"name": "Üçlü Koltuk Takımı", "description": "Gri kumaş", "price": 18999, "stock": 8, "leaf": "Koltuk Takımı", "image_url": "https://picsum.photos/seed/sofa/400/400"},
+    {"name": "6 Kişilik Yemek Masası", "description": "Ahşap, açılır", "price": 8499, "stock": 12, "leaf": "Yemek Masası", "image_url": "https://picsum.photos/seed/diningtable/400/400"},
+    {"name": "Çift Kapılı Buzdolabı", "description": "500L, No-Frost", "price": 22999, "stock": 15, "leaf": "Çift Kapılı", "image_url": "https://picsum.photos/seed/fridge/400/400"},
+    {"name": "Inverter Klima 12000 BTU", "description": "Sessiz, A++", "price": 16499, "stock": 18, "leaf": "Inverter Klima", "image_url": "https://picsum.photos/seed/ac/400/400"},
+    {"name": "Akrilik Salon Halısı", "description": "160x230", "price": 2499, "stock": 30, "leaf": "Akrilik Halı", "image_url": "https://picsum.photos/seed/carpet/400/400"},
+    {"name": "Robot Süpürge", "description": "Akıllı haritalama", "price": 7999, "stock": 20, "leaf": "Robot Süpürge", "image_url": "https://picsum.photos/seed/robot/400/400"},
+    {"name": "Blender Seti 1000W", "description": "5 parça", "price": 1299, "stock": 35, "leaf": "Blender Seti", "image_url": "https://picsum.photos/seed/blender/400/400"},
+    {"name": "Türk Kahvesi Makinesi", "description": "Otomatik", "price": 1499, "stock": 40, "leaf": "Türk Kahvesi Makinesi", "image_url": "https://picsum.photos/seed/coffee/400/400"},
+    {"name": "Granit Tencere Seti", "description": "7 parça", "price": 3299, "stock": 25, "leaf": "Granit Tencere Seti", "image_url": "https://picsum.photos/seed/pot/400/400"},
+    {"name": "12 Kişilik Yemek Takımı", "description": "Porselen", "price": 2799, "stock": 30, "leaf": "12 Kişilik Yemek Takımı", "image_url": "https://picsum.photos/seed/plates/400/400"},
+    {"name": "Banyo Havlusu Seti", "description": "4 parça, pamuk", "price": 649, "stock": 50, "leaf": "Banyo Havlusu", "image_url": "https://picsum.photos/seed/towel/400/400"},
+    {"name": "Çift Kişilik Nevresim", "description": "Saten, 4 parça", "price": 749, "stock": 50, "leaf": "Çift Kişilik", "image_url": "https://picsum.photos/seed/bedding/400/400"},
+    {"name": "Süper Evlilik Paketi", "description": "Komple çeyiz", "price": 24999, "stock": 5, "leaf": "Süper Evlilik Paketi", "image_url": "https://picsum.photos/seed/dowry/400/400"},
 ]
 
 for product in products:
-    sub_name = product.pop("sub")
-    product["category_id"] = sub_ids.get(sub_name)
+    leaf_name = product.pop("leaf")
+    product["category_id"] = leaf_ids.get(leaf_name)
     res = requests.post(f"{BASE}/products/", json=product)
     if res.status_code == 200:
         print(f"✓ Ürün: {product['name']}")
