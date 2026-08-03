@@ -15,12 +15,12 @@ def create_product(db: Session, product: schemas.ProductCreate):
     return db_product
 
 
-def get_products(db: Session, skip: int = 0, limit: int = 100, search: str = None):
-    print(f"GET_PRODUCTS ÇALIŞTI - search: {search}")
+def get_products(db: Session, skip: int = 0, limit: int = 100, search: str = None, category_id: int = None):
     query = db.query(models.Product)
     if search:
-        print(f"FİLTRE UYGULANIYOR: {search}")
         query = query.filter(models.Product.name.ilike(f"{search}%"))
+    if category_id:
+        query = query.filter(models.Product.category_id == category_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -367,3 +367,15 @@ def create_address(db: Session, user_id: int, address: schemas.AddressCreate):
     db.commit()
     db.refresh(db_address)
     return db_address
+
+
+def create_category(db: Session, category: schemas.CategoryCreate):
+    db_category = models.Category(name=category.name)
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+    return db_category
+
+
+def get_categories(db: Session):
+    return db.query(models.Category).all()

@@ -24,7 +24,8 @@ class Product(Base):
     price = Column(Float, nullable=False)
     stock = Column(Integer, default=0)
     image_url = Column(String, nullable=True)
-
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    category = relationship("Category")
 class CartItem(Base):
     __tablename__ = "cart_items"
 
@@ -83,3 +84,12 @@ class Address(Base):
     city = Column(String, nullable=False)
     district = Column(String, nullable=False)
     full_address = Column(String, nullable=False)
+
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, nullable=False)
+
+    

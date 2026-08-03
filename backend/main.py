@@ -7,6 +7,7 @@ from database import engine
 from routers import cart, orders, products, auth
 from routers import favorites
 from routers import addresses
+from routers import categories
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,6 +20,7 @@ app.include_router(orders.router)
 app.include_router(auth.router)
 app.include_router(favorites.router)
 app.include_router(addresses.router)
+app.include_router(categories.router)
 
 app.add_middleware(
     CORSMiddleware,

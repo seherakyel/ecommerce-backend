@@ -32,3 +32,8 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     if not product:
         raise HTTPException(status_code=404, detail="Ürün bulunamadı")
     return {"mesaj": "Ürün silindi"}
+
+
+@router.get("/", response_model=list[schemas.ProductResponse])
+def list_products(search: str = None, category_id: int = None, db: Session = Depends(get_db)):
+    return crud.get_products(db, search=search, category_id=category_id)

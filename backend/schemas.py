@@ -23,12 +23,24 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class CategoryCreate(BaseModel):
+    name: str
+
+
+class CategoryResponse(BaseModel):
+    id: int
+    name: str
+
+    model_config = {"from_attributes": True}
 class ProductCreate(BaseModel):
     name: str
     description: str | None = None
     price: float
     stock: int = 0
     image_url: str | None = None
+    category_id: int | None = None
 
 
 class ProductResponse(BaseModel):
@@ -40,6 +52,7 @@ class ProductResponse(BaseModel):
     image_url: str | None
 
     model_config = {"from_attributes": True}
+    category: CategoryResponse | None = None
 
 
 class CartItemCreate(BaseModel):
@@ -108,3 +121,6 @@ class AddressResponse(BaseModel):
     full_address: str
 
     model_config = {"from_attributes": True}
+
+
+
