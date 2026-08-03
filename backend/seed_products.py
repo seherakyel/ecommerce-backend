@@ -61,7 +61,7 @@ category_tree = {
         "Banyo Aksesuarları": ["Sabunluk & Fırçalık", "Çöp Kovası", "Çamaşır Sepeti"],
         "Banyo Paspasları": ["2'li Paspas Takımı", "Tekli Paspas"]
     },
-    "Yatak Odası & Ev Tekstili": {
+    "Ev Tekstili": {
         "Nevresim Takımları": ["Çift Kişilik", "Tek Kişilik", "Battal Boy", "Bebek & Çocuk"],
         "Yatak Örtüsü & Pike": ["Yatak Örtüsü Seti", "Pike Seti", "Yatak Pedleri"],
         "Yorgan & Yastık": ["Silikon Yorgan", "Kaz Tüyü Yorgan", "Ortopedik Yastık", "Pamuk Yastık"]
@@ -79,7 +79,6 @@ category_tree = {
     }
 }
 
-# En alt seviye kategori adı -> id (ürünleri bağlamak için)
 leaf_ids = {}
 
 for main_name, subs in category_tree.items():
@@ -99,7 +98,6 @@ for main_name, subs in category_tree.items():
             leaf_ids[leaf_name] = leaf_id
             print(f"      ✓ Alt-alt: {leaf_name} (id: {leaf_id})")
 
-# Ürünler (en alt seviyeye bağlı)
 products = [
     {"name": "Başlıklı Çift Kişilik Karyola", "description": "Depolu, modern", "price": 8999, "stock": 10, "leaf": "Karyola & Yatak", "image_url": "https://picsum.photos/seed/bed/400/400"},
     {"name": "4 Kapılı Gardırop", "description": "Aynalı", "price": 6499, "stock": 12, "leaf": "Gardırop", "image_url": "https://picsum.photos/seed/wardrobe/400/400"},
