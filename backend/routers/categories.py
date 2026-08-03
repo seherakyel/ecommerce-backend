@@ -14,5 +14,5 @@ def create_category(category: schemas.CategoryCreate, db: Session = Depends(get_
 
 
 @router.get("/", response_model=list[schemas.CategoryResponse])
-def list_categories(db: Session = Depends(get_db)):
-    return crud.get_categories(db)
+def list_categories(parent_id: int = None, db: Session = Depends(get_db)):
+    return crud.get_categories(db, parent_id=parent_id)

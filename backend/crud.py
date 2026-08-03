@@ -370,12 +370,17 @@ def create_address(db: Session, user_id: int, address: schemas.AddressCreate):
 
 
 def create_category(db: Session, category: schemas.CategoryCreate):
-    db_category = models.Category(name=category.name)
+    db_category = models.Category(name=category.name, parent_id=category.parent_id)
     db.add(db_category)
     db.commit()
     db.refresh(db_category)
     return db_category
 
 
-def get_categories(db: Session):
-    return db.query(models.Category).all()
+def get_categories(db: Session, parent_id: int = None):
+    query = db.query(models.Category)
+    if parent_id is None:
+        query = query.filter(models.Category.parent_id.is_(None))
+    else:
+        query = query.filter(models.Category.parent_id == parent_id)
+    return query.all()
