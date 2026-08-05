@@ -4,17 +4,17 @@ BASE = "http://127.0.0.1:8000"
 
 # Ana kategoriler + görselleri
 main_images = {
-    "Mobilya": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400",
-    "Beyaz Eşya": "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400",
-    "Halı": "https://images.unsplash.com/photo-1600166898405-da9535204843?w=400",
-    "Perde": "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400",
-    "Küçük Ev Aletleri": "https://images.unsplash.com/photo-1585515320310-259814833e62?w=400",
-    "Pişirme": "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?w=400",
-    "Sofra": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
-    "Banyo": "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=400",
-    "Ev Tekstili": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400",
-    "Ev & Yaşam": "https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?w=400",
-    "Çeyiz Setleri": "https://images.unsplash.com/photo-1584100936595-c0654b55a2e6?w=400",
+    "Mobilya": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&fit=crop&q=80",
+    "Beyaz Eşya": "https://images.unsplash.com/photo-1723641276146-a2140bfc82aa?w=400&fit=crop&q=80",
+    "Halı": "https://images.unsplash.com/photo-1600166898405-da9535204843?w=400&fit=crop&q=80",
+    "Perde": "https://images.unsplash.com/photo-1745242395967-c69b5af856a6?w=400&fit=crop&q=80",
+    "Küçük Ev Aletleri": "https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&fit=crop&q=80",
+    "Pişirme": "https://images.unsplash.com/photo-1584990347193-6bebebfeaeee?w=600&fit=crop&q=80",
+    "Sofra": "https://images.unsplash.com/photo-1764874299289-f07dd3015169?w=400&fit=crop&q=80",
+    "Banyo": "https://images.unsplash.com/photo-1620626011761-996317b8d101?w=400&fit=crop&q=80",
+    "Ev Tekstili": "https://images.unsplash.com/photo-1698746044370-4ea50c59c009?w=400&fit=crop&q=80",
+    "Ev & Yaşam": "https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?w=400&fit=crop&q=80",
+    "Çeyiz Setleri": "https://images.unsplash.com/photo-1505366055494-2268a382e017?w=600&fit=crop&q=80",
 }
 
 category_tree = {
