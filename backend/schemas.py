@@ -28,11 +28,13 @@ class Token(BaseModel):
 class CategoryCreate(BaseModel):
     name: str
     parent_id: int | None = None
+    image_url: str | None = None
 
 class CategoryResponse(BaseModel):
     id: int
     name: str
     parent_id: int | None = None
+    image_url: str | None = None
 
     model_config = {"from_attributes": True}
     

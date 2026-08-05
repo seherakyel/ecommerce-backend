@@ -92,4 +92,4 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     parent_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
-    
+    image_url = Column(String, nullable=True)

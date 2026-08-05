@@ -370,7 +370,11 @@ def create_address(db: Session, user_id: int, address: schemas.AddressCreate):
 
 
 def create_category(db: Session, category: schemas.CategoryCreate):
-    db_category = models.Category(name=category.name, parent_id=category.parent_id)
+    db_category = models.Category(
+        name=category.name,
+        parent_id=category.parent_id,
+        image_url=category.image_url,
+    )
     db.add(db_category)
     db.commit()
     db.refresh(db_category)
