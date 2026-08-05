@@ -381,6 +381,17 @@ def create_category(db: Session, category: schemas.CategoryCreate):
     return db_category
 
 
+def update_category(db: Session, category_id: int, category: schemas.CategoryCreate):
+    db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
+    if not db_category:
+        raise HTTPException(status_code=404, detail="Kategori bulunamadı")
+    for key, value in category.model_dump().items():
+        setattr(db_category, key, value)
+    db.commit()
+    db.refresh(db_category)
+    return db_category
+
+
 def get_categories(db: Session, parent_id: int = None):
     query = db.query(models.Category)
     if parent_id is None:

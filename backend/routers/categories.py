@@ -16,3 +16,8 @@ def create_category(category: schemas.CategoryCreate, db: Session = Depends(get_
 @router.get("/", response_model=list[schemas.CategoryResponse])
 def list_categories(parent_id: int = None, db: Session = Depends(get_db)):
     return crud.get_categories(db, parent_id=parent_id)
+
+
+@router.put("/{category_id}", response_model=schemas.CategoryResponse)
+def update_category(category_id: int, category: schemas.CategoryCreate, db: Session = Depends(get_db)):
+    return crud.update_category(db, category_id, category)
