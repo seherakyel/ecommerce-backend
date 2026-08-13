@@ -1,6 +1,6 @@
 import requests
 
-BASE = "https://ecommerce-backend-tjxj.onrender.com"
+BASE = "http://127.0.0.1:8000"
 
 # Ana kategoriler + görselleri
 main_images = {
