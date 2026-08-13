@@ -1,6 +1,6 @@
 import requests
 
-BASE = "http://127.0.0.1:8000"
+BASE = "https://ecommerce-backend-tjxj.onrender.com"
 
 # Ana kategoriler + görselleri
 main_images = {
@@ -98,6 +98,7 @@ leaf_ids = {}
 
 for main_name, subs in category_tree.items():
     payload = {"name": main_name, "image_url": main_images.get(main_name)}
+    print("The request is being sent:", f"{BASE}/categories/")
     res = requests.post(f"{BASE}/categories/", json=payload)
     main_id = res.json()["id"]
     print(f"✓ Ana: {main_name}")
