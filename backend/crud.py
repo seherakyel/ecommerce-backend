@@ -399,3 +399,18 @@ def get_categories(db: Session, parent_id: int = None):
     else:
         query = query.filter(models.Category.parent_id == parent_id)
     return query.all()
+
+
+def update_user(db: Session, user_id: int, user_update: schemas.UserUpdate):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not db_user:
+        return None
+    if user_update.first_name is not None:
+        db_user.first_name = user_update.first_name
+    if user_update.last_name is not None:
+        db_user.last_name = user_update.last_name
+    if user_update.phone is not None:
+        db_user.phone = user_update.phone
+    db.commit()
+    db.refresh(db_user)
+    return db_user

@@ -17,6 +17,12 @@ class UserResponse(BaseModel):
 
     model_config = {"from_attributes": True}
 
+
+class UserUpdate(BaseModel):
+    first_name: str | None = None
+    last_name: str | None = None
+    phone: str | None = None
+
 class UserLogin(BaseModel):
     email: str
     password: str

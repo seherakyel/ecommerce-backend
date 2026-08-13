@@ -24,3 +24,15 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     token = auth.create_access_token(data={"sub": db_user.email})
     return {"access_token": token, "token_type": "bearer"}
 
+@router.get("/me", response_model=schemas.UserResponse)
+def get_me(current_user: models.User = Depends(get_current_user)):
+    return current_user
+
+
+@router.patch("/me", response_model=schemas.UserResponse)
+def update_me(
+    user_update: schemas.UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    return crud.update_user(db, current_user.id, user_update)
