@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from database import get_db
 
 import crud
 import schemas
-from database import get_db
+import json
+from redis_client import redis_client
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -15,7 +17,14 @@ def add_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=list[schemas.ProductResponse])
 def list_products(search: str = None, db: Session = Depends(get_db)):
-    return crud.get_products(db, search=search)
+    cache_key = f"products:search:{search}" if search else "products:all"
+    cached = redis_client.get(cache_key)
+    if cached:
+        return json.loads(cached)
+    products = crud.get_products(db, search=search)
+    data = [schemas.ProductResponse.model_validate(p).model_dump() for p in products]
+    redis_client.setex(cache_key, 300, json.dumps(data, default=str))
+    return data
 
 
 @router.get("/{product_id}", response_model=schemas.ProductResponse)
