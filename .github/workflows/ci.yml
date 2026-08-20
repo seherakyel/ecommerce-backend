@@ -56,3 +56,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce
           REDIS_URL: redis://localhost:6379
         run: python -m pytest -v
+
+      - name: Deploy to Render
+        if: success()
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
