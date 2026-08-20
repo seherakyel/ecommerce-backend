@@ -156,3 +156,5 @@ backend/
 ```
 
 ---
+
+echo "# CI/CD pipeline test" >> README.md
