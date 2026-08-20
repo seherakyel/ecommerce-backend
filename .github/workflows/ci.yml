@@ -36,11 +36,7 @@ jobs:
           --health-retries 5
 
       env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce
-        working-directory: ./backend
-        REDIS_URL: redis://localhost:6379
-      run: python -m pytest -v
-
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce
     steps:
       - name: Kodu al
         uses: actions/checkout@v4
