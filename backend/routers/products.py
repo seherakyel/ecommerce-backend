@@ -9,10 +9,18 @@ from redis_client import redis_client
 
 router = APIRouter(prefix="/products", tags=["products"])
 
+def invalidate_product_cache():
+    count = 0
+    for key in redis_client.scan_iter("products:*"):
+        redis_client.delete(key)
+        count += 1
+
 
 @router.post("/", response_model=schemas.ProductResponse)
 def add_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
-    return crud.create_product(db, product)
+    new_product = crud.create_product(db, product)
+    invalidate_product_cache()
+    return new_product
 
 
 @router.get("/", response_model=list[schemas.ProductResponse])
