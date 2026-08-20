@@ -1,13 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
+from database import get_db
+from dependencies import get_current_user
+from rabbitmq_client import publish_order
 import crud
 import schemas
 import models
-from database import get_db
-from dependencies import get_current_user
+
+
 
 router = APIRouter(prefix="/orders", tags=["orders"])
+
 
 
 @router.post("/", response_model=schemas.OrderResponse)
@@ -16,7 +19,13 @@ def create_order(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    return crud.create_order_from_cart(db, current_user.id, order.address_id)
+    new_order = crud.create_order_from_cart(db, current_user.id, order.address_id)
+    publish_order({
+        "order_id": new_order.id,
+        "user_id": current_user.id,
+        "total": float(new_order.total),
+    })
+    return new_order
 
 
 @router.get("/", response_model=list[schemas.OrderResponse])
