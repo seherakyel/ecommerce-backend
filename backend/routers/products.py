@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-
+from fastapi import UploadFile, File
+from cloudinary_client import upload_image
+from redis_client import redis_client
 import crud
 import schemas
 import json
-from redis_client import redis_client
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -54,3 +55,9 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[schemas.ProductResponse])
 def list_products(search: str = None, category_id: int = None, db: Session = Depends(get_db)):
     return crud.get_products(db, search=search, category_id=category_id)
+
+
+@router.post("/upload-image")
+def upload_product_image(file: UploadFile = File(...)):
+    url = upload_image(file.file)
+    return {"image_url": url}
